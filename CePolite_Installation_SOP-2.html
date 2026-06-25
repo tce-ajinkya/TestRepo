@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CePolite Installation & Activation Guide</title>
+    <style>
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-sidebar: #0f172a;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --text-sidebar: #f8fafc;
+            --border-color: #e2e8f0;
+            --accent: #184c78;
+            --accent-light: rgba(24, 76, 120, 0.1);
+            --accent-hover: #0e2e4b;
+            --card-bg: #ffffff;
+            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            
+            --state-success: #22c55e;
+            --state-warning: #eab308;
+            --state-error: #ef4444;
+            --state-success-bg: rgba(34, 197, 94, 0.1);
+            --state-warning-bg: rgba(234, 179, 8, 0.1);
+            --state-error-bg: rgba(239, 68, 68, 0.1);
+        }
+
+        body.dark-mode {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-sidebar: #090d16;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-sidebar: #f1f5f9;
+            --border-color: #334155;
+            --accent: #38bdf8;
+            --accent-light: rgba(56, 189, 248, 0.1);
+            --accent-hover: #0ea5e9;
+            --card-bg: #1e293b;
+            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2), 0 2px 4px -2px rgb(0 0 0 / 0.2);
+            
+            --state-success-bg: rgba(34, 197, 94, 0.15);
+            --state-warning-bg: rgba(234, 179, 8, 0.15);
+            --state-error-bg: rgba(239, 68, 68, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding-top: 60px;
+        }
+
+        /* Sidebar Styling - drawer overlay */
+        .sidebar {
+            width: 300px;
+            background-color: var(--bg-sidebar);
+            color: var(--text-sidebar);
+            padding: 2rem 1.5rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            z-index: 300;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.25);
+        }
+
+        .sidebar.open {
+            transform: translateX(0) !important;
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 12px;
+            background: white;
+            padding: 8px;
+            box-shadow: 0 4px 6px rgb(0 0 0 / 0.3);
+        }
+
+        .brand-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+        }
+
+        .brand-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .sidebar-menu-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.5;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-sidebar);
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: background-color 0.2s, opacity 0.2s;
+            opacity: 0.85;
+        }
+
+        .sidebar-link:hover, .sidebar-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            opacity: 1;
+            font-weight: 600;
+        }
+
+        .theme-toggle-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: transparent;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+            margin-top: auto;
+        }
+
+        .theme-toggle-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Main Content Layout - Centered Column */
+        .main-content {
+            margin: 0 auto;
+            flex: 1;
+            padding: 2.5rem 1.5rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* Top Bar Header */
+        .app-header {
+            background-color: var(--bg-sidebar);
+            color: white;
+            padding: 0 1.5rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 200;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .menu-toggle {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Styling */
+        .hero {
+            background-color: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 100%;
+            background-color: var(--accent);
+        }
+
+        .hero-title {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-desc {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .metadata-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background-color: var(--accent-light);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .badge-accent {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            border: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white !important;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .btn-secondary {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--border-color);
+        }
+
+        /* Document Sections */
+        .section-card {
+            background-color: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-content {
+            margin-top: 0;
+        }
+
+        /* Grid Comparison Table */
+        .comparison-container {
+            width: 100%;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+            table-layout: fixed;
+        }
+
+        .comparison-table th, .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            word-break: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+        }
+
+        .comparison-table th {
+            background-color: var(--accent);
+            color: white;
+            font-weight: 700;
+        }
+
+        .comparison-table tr:nth-child(even) td {
+            background-color: var(--bg-primary);
+        }
+
+        .comparison-table td:first-child, .ts-table td:first-child {
+            font-weight: 700;
+        }
+
+        .comparison-table th:nth-child(1),
+        .comparison-table td:nth-child(1) {
+            width: 35%;
+        }
+        .comparison-table th:nth-child(2),
+        .comparison-table td:nth-child(2) {
+            width: 65%;
+        }
+
+        /* Quick Setup Steps - Accordion Style */
+        .steps-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .step-row {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .step-row:hover {
+            border-color: var(--accent);
+            box-shadow: var(--card-shadow);
+        }
+
+        .step-row-header {
+            display: flex;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            cursor: pointer;
+            user-select: none;
+            gap: 1rem;
+        }
+
+        .step-row-number {
+            background-color: var(--accent);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .step-row-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            flex: 1;
+        }
+
+        .step-row-chevron {
+            color: var(--text-muted);
+            transition: transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step-row-content {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            padding: 0 1.5rem;
+            transition: max-height 0.3s ease-out, opacity 0.2s ease-out, padding 0.3s ease-out;
+        }
+
+        .step-row.expanded {
+            border-color: var(--accent);
+        }
+
+        .step-row.expanded .step-row-chevron {
+            transform: rotate(90deg);
+        }
+
+        .step-row.expanded .step-row-content {
+            max-height: 1000px;
+            opacity: 1;
+            padding: 0.5rem 1.5rem 1.5rem 4.25rem;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        .step-meta {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            margin-top: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .step-note-title {
+            font-weight: bold;
+            color: var(--accent);
+            margin-bottom: 0.25rem;
+        }
+
+        /* Code/Input Copy Fields */
+        .copy-field {
+            display: flex;
+            align-items: center;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.5rem 0.75rem;
+            margin-top: 0.5rem;
+            gap: 0.5rem;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .copy-text {
+            font-family: monospace;
+            font-size: 0.9rem;
+            flex: 1;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .btn-copy {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 4px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .btn-copy:hover {
+            background-color: var(--border-color);
+            color: var(--text-main);
+        }
+
+        /* Success Checklist Widget */
+        .success-checklist-box {
+            background-color: var(--state-success-bg);
+            border: 1px solid var(--state-success);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .success-checklist-icon {
+            font-size: 2rem;
+            color: var(--state-success);
+        }
+
+        .success-checklist-text h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.25rem;
+        }
+
+        .success-checklist-text p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .success-checklist-items {
+            margin-top: 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .checklist-bullet {
+            color: var(--state-success);
+            font-weight: bold;
+        }
+
+        /* Troubleshooting Section */
+        .ts-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+            margin-top: 1rem;
+            table-layout: fixed;
+        }
+
+        .ts-table th, .ts-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            word-break: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+        }
+
+        .ts-table th {
+            background-color: var(--accent);
+            color: white;
+            font-weight: 700;
+        }
+
+        .ts-table tr:hover td {
+            background-color: var(--bg-primary);
+        }
+
+        .ts-issue-label {
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        body.dark-mode .ts-issue-label {
+            color: #38bdf8;
+        }
+
+        .ts-table th:nth-child(1),
+        .ts-table td:nth-child(1) {
+            width: 30%;
+        }
+        .ts-table th:nth-child(2),
+        .ts-table td:nth-child(2) {
+            width: 70%;
+        }
+
+        /* Responsive Design Media Queries */
+        @media (max-width: 1024px) {
+            .sidebar {
+                position: fixed;
+                top: 60px;
+                height: calc(100vh - 60px);
+                width: 280px;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero {
+                padding: 1.5rem;
+            }
+
+            .hero-title {
+                font-size: 1.75rem;
+            }
+
+            .section-card {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.35rem;
+            }
+
+            .comparison-table th, .comparison-table td, .ts-table th, .ts-table td {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.85rem;
+            }
+
+            .step-row.expanded .step-row-content {
+                padding: 0.5rem 1rem 1.25rem 1rem;
+            }
+        }
+
+        /* Print Media Styles */
+        @media print {
+            .sidebar, .app-header, .theme-toggle-btn, .btn-copy, .hero-actions {
+                display: none !important;
+            }
+
+            .main-content {
+                margin-left: 0 !important;
+                padding: 0 !important;
+                max-width: 100% !important;
+            }
+
+            body {
+                background-color: white !important;
+                color: black !important;
+                font-size: 11pt;
+            }
+
+            .hero, .section-card, .step-row {
+                background-color: white !important;
+                border: 1px solid #000 !important;
+                box-shadow: none !important;
+                margin-bottom: 20px !important;
+                page-break-inside: avoid;
+            }
+
+            .comparison-table th, .ts-table th {
+                background-color: #333 !important;
+                color: white !important;
+            }
+
+            .comparison-table td, .ts-table td {
+                border-bottom: 1px solid #000 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- App Header -->
+    <header class="app-header">
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+            <img src="data:image/png;base64,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" style="width:36px; height:36px; background:white; border-radius:6px; padding:2px;" alt="Logo">
+            <span style="font-weight:700; font-size:1.1rem; color:white;">CePolite Setup</span>
+        </div>
+        <button class="menu-toggle" id="menuToggleBtn">☰</button>
+    </header>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebarMenu">
+            <div class="logo-container">
+                <img class="logo-img" src="data:image/png;base64,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" alt="CePolite Logo">
+                <div>
+                    <h1 class="brand-title">CePolite Guide</h1>
+                    <p class="brand-subtitle">Installation SOP</p>
+                </div>
+            </div>
+
+
+
+            <nav class="sidebar-menu">
+                <div class="sidebar-menu-title">Navigation</div>
+                <a href="#hero" class="sidebar-link active">Introduction</a>
+                <a href="#apk-guide" class="sidebar-link">APK Selection</a>
+                <a href="#sample-reference" class="sidebar-link">Sample Reference</a>
+                <a href="#quick-setup" class="sidebar-link">Quick Installation</a>
+                <a href="#pin-setup" class="sidebar-link">PIN Setup & Access</a>
+                <a href="#success-checklist" class="sidebar-link">Success Checklist</a>
+                <a href="#troubleshooting" class="sidebar-link">Troubleshooting</a>
+            </nav>
+
+            <button class="theme-toggle-btn" id="themeToggleBtn">
+                <span id="themeToggleIcon">🌙</span> <span id="themeToggleLabel">Dark Mode</span>
+            </button>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Hero Card / Introduction -->
+            <section class="hero" id="hero">
+                <h2 class="hero-title">CePolite Installation & Activation Guide</h2>
+                <p class="hero-desc">Single-page onboarding and deployment reference. Installs and activates classroom smartboards in under 5 minutes.</p>
+                
+                <div class="metadata-badges">
+                    <span class="badge badge-accent">Production Ready</span>
+                    <span class="badge">Application Version: As per the installed release build</span>
+                    <span class="badge">Release Date: As per the release package provided</span>
+                    <span class="badge">Supported Builds: SaaS (SURF) & Lite Mode</span>
+                </div>
+
+                <div class="hero-actions">
+                    <a href="#quick-setup" class="btn btn-primary">Start Installation</a>
+                    <a href="#troubleshooting" class="btn btn-secondary">Get Troubleshooting Help</a>
+                </div>
+            </section>
+
+            <!-- Section 2: APK Selection Guide -->
+            <section class="section-card" id="apk-guide">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        1. APK Selection Guide
+                    </h3>
+                </div>
+                <div class="section-content">
+                    <p style="color:var(--text-muted); margin-bottom:1rem; font-size:0.95rem;">Select the appropriate application build based on the Interactive Flat Panel (IFP) hardware specification:</p>
+                    
+                    <div class="comparison-container">
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Build / Flavor</th>
+                                    <th>Recommended For</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>CePolite SaaS (SURF / Online)</strong></td>
+                                    <td>IFPs with <strong>8GB+ RAM</strong> (Standard Modern Classrooms)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>CePolite Lite Mode</strong></td>
+                                    <td>IFPs with <strong>4GB+ RAM</strong>, particularly devices with limited processing capability or entry-level hardware configurations.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Sample Reference Information -->
+            <section class="section-card" id="sample-reference">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                        2. Sample Reference Information
+                    </h3>
+                </div>
+                <div class="section-content">
+                    <p style="color:var(--text-muted); margin-bottom:1rem; font-size:0.95rem;">Below is illustrative reference metadata to help understand naming conventions and software packages:</p>
+                    
+                    <div class="comparison-container">
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Field</th>
+                                    <th>Sample Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Application Name</td>
+                                    <td>CePolite (SaaS & Lite Mode)</td>
+                                </tr>
+                                <tr>
+                                    <td>SaaS APK Name</td>
+                                    <td style="font-family:monospace;">CePolite_Online_Prod_v82_(19)_20260624.apk</td>
+                                </tr>
+                                <tr>
+                                    <td>Lite APK Name</td>
+                                    <td style="font-family:monospace;">CePolite_Lite_Online_Prod_v82_(19)_20260624.apk</td>
+                                </tr>
+                                <tr>
+                                    <td>Version Code / Name</td>
+                                    <td>v82 (19)</td>
+                                </tr>
+                                <tr>
+                                    <td>Build Date</td>
+                                    <td>June 24, 2026</td>
+                                </tr>
+                                <tr>
+                                    <td>Primary Target</td>
+                                    <td>Classroom Interactive Flat Panels (IFPs) & Tablets</td>
+                                </tr>
+                                <tr>
+                                    <td>Document Version</td>
+                                    <td>
+                                        <div style="font-weight:600; margin-bottom:0.25rem;">June 24, 2026 (v1.0)</div>
+                                        <div style="font-size:0.8rem; line-height:1.4; color:var(--text-muted); max-height:150px; overflow-y:auto; padding-right:5px;">
+                                            <div style="margin-top:0.25rem; border-top:1px dashed var(--border-color); padding-top:0.25rem;"><strong>v1.0:</strong> Initial release of the unified single-page HTML Installation & Activation Guide.</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="step-meta" style="background:var(--state-warning-bg); border-color:var(--state-warning); color:var(--text-main); margin-top:1.5rem;">
+                        <div class="step-note-title" style="color:var(--state-warning);">⚠️ Important Note</div>
+                        <p style="margin-bottom: 0.5rem;">The above values are provided solely as <strong>sample references</strong> to help users understand the naming conventions and package structure.</p>
+                        <p style="margin-bottom: 0.5rem;">Actual values may vary depending on:</p>
+                        <ul style="padding-left: 1.25rem; margin-bottom: 0.5rem; display: flex; flex-direction: column; gap: 0.25rem;">
+                            <li>Release version</li>
+                            <li>Build date</li>
+                            <li>Deployment environment</li>
+                            <li>Device type</li>
+                            <li>Distribution package provided by the deployment team</li>
+                        </ul>
+                        <p>The SOP should not depend on these specific values and should remain valid for all future CePolite SaaS and Lite releases.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4: Quick Installation Steps -->
+            <section class="section-card" id="quick-setup">
+                <div class="section-header">
+                    <div style="display:flex; flex-direction:column; gap:0.25rem;">
+                        <h3 class="section-title">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                            3. Quick Installation Steps
+                        </h3>
+                    </div>
+                </div>
+                <div class="section-content">
+                    <p style="color:var(--text-muted); margin-bottom:1.5rem; font-size:0.95rem;">Follow these simple steps to install and activate CePolite on your classroom device.</p>
+                    
+                    <div class="steps-grid">
+                        <!-- Step 1 -->
+                        <div class="step-row">
+                            <div class="step-row-header">
+                                <div class="step-row-number">1</div>
+                                <div class="step-row-title">Select the Appropriate APK</div>
+                                <div class="step-row-chevron">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                                </div>
+                            </div>
+                            <div class="step-row-content">
+                                <p class="step-desc">Confirm the device RAM capacity. Choose and download the matching APK file:</p>
+                                <div style="display:flex; flex-direction:column; gap:0.5rem; margin-top:0.5rem;">
+                                    <div style="display:flex; align-items:flex-start; gap:0.5rem; flex-direction:column;">
+                                        <div>
+                                            <span style="font-size: 0.8rem; padding: 0.2rem 0.5rem; border-radius: 4px; background: var(--accent-light); font-weight: bold; margin-right: 0.5rem;">CePolite SaaS APK</span>
+                                            <span style="font-size:0.9rem; color:var(--text-muted);">Latest CePolite SaaS (SURF / Online) APK provided by the deployment team.</span>
+                                        </div>
+                                        <div style="margin-top:0.25rem;">
+                                            <span style="font-size: 0.8rem; padding: 0.2rem 0.5rem; border-radius: 4px; background: var(--state-warning-bg); font-weight: bold; color:var(--state-warning); margin-right: 0.5rem;">CePolite Lite APK</span>
+                                            <span style="font-size:0.9rem; color:var(--text-muted);">Latest CePolite Lite APK provided by the deployment team.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="step-meta">
+                                    <div class="step-note-title">💡 Standard Usage Guide</div>
+                                    Use <strong>SaaS Mode</strong> for panels with 8GB+ RAM. Use <strong>Lite Mode</strong> for panels with 4GB+ RAM (particularly entry-level hardware configurations or limited processing capability).
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="step-row">
+                            <div class="step-row-header">
+                                <div class="step-row-number">2</div>
+                                <div class="step-row-title">Install the APK</div>
+                                <div class="step-row-chevron">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                                </div>
+                            </div>
+                            <div class="step-row-content">
+                                <p class="step-desc">Open the Downloads folder or File Manager, tap the downloaded APK file, allow unknown sources if prompted, and complete the installation.</p>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="step-row">
+                            <div class="step-row-header">
+                                <div class="step-row-number">3</div>
+                                <div class="step-row-title">Grant Required Permissions</div>
+                                <div class="step-row-chevron">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                                </div>
+                            </div>
+                            <div class="step-row-content">
+                                <p class="step-desc">Launch the application. Tap <strong>Allow</strong> when requested for Storage permissions (or toggle "Allow access to manage all files" on Android 11+). The app will reload automatically.</p>
+                            </div>
+                        </div>
+
+                        <!-- Step 4 -->
+                        <div class="step-row">
+                            <div class="step-row-header">
+                                <div class="step-row-number">4</div>
+                                <div class="step-row-title">Enter School Code</div>
+                                <div class="step-row-chevron">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                                </div>
+                            </div>
+                            <div class="step-row-content">
+                                <p class="step-desc">Enter your school's unique license verification key in the School Code field:</p>
+                                <div class="copy-field">
+                                    <span class="copy-text" id="codeText">SURF-SCHOOL-2026</span>
+                                    <button class="btn-copy" onclick="copyContent('codeText', this)" title="Copy School Code">
+                                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 5 -->
+                        <div class="step-row">
+                            <div class="step-row-header">
+                                <div class="step-row-number">5</div>
+                                <div class="step-row-title">Enter Classroom Name</div>
+                                <div class="step-row-chevron">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                                </div>
+                            </div>
+                            <div class="step-row-content">
+                                <p class="step-desc">Enter the Classroom Name exactly as defined in the admin console to load the correct syllabus profile:</p>
+                                <div class="copy-field">
+                                    <span class="copy-text" id="classText">Grade-5-A</span>
+                                    <button class="btn-copy" onclick="copyContent('classText', this)" title="Copy Class Name">
+                                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 6 -->
+                        <div class="step-row">
+                            <div class="step-row-header">
+                                <div class="step-row-number">6</div>
+                                <div class="step-row-title">Register Device</div>
+                                <div class="step-row-chevron">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                                </div>
+                            </div>
+                            <div class="step-row-content">
+                                <p class="step-desc">Tap the <strong>Register</strong> button to validate the school profile settings and activate the software license.</p>
+                            </div>
+                        </div>
+
+                        <!-- Step 7 -->
+                        <div class="step-row">
+                            <div class="step-row-header">
+                                <div class="step-row-number">7</div>
+                                <div class="step-row-title">PIN Verification / First-Time PIN Creation</div>
+                                <div class="step-row-chevron">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                                </div>
+                            </div>
+                            <div class="step-row-content">
+                                <p class="step-desc">Access the system using the quick access PIN. Follow the instructions detailed in the PIN Setup & Access section below.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 5: PIN Setup & Access -->
+            <section class="section-card" id="pin-setup">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        4. PIN Setup & Access Workflow
+                    </h3>
+                </div>
+                <div class="section-content">
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:1.5rem;">
+                        <!-- Existing Users Card -->
+                        <div style="background-color:var(--bg-primary); border:1px solid var(--border-color); border-radius:12px; padding:1.5rem;">
+                            <h4 style="font-weight:700; font-size:1.1rem; color:var(--accent); margin-bottom:0.75rem; display:flex; align-items:center; gap:0.5rem;">
+                                <span style="font-size:1.3rem;">🔑</span> Existing Users / Configured Classroom
+                            </h4>
+                            <p style="font-size:0.95rem; color:var(--text-muted); margin-bottom:0.5rem;">If the classroom has already completed the initial setup and has an active security PIN:</p>
+                            <ul style="padding-left:1.25rem; font-size:0.9rem; color:var(--text-muted); display:flex; flex-direction:column; gap:0.25rem;">
+                                <li>Launch the CePolite application.</li>
+                                <li>Enter the pre-configured <strong>classroom PIN</strong> to access dashboard resources directly.</li>
+                            </ul>
+                        </div>
+
+                        <!-- First-Time Users Card -->
+                        <div style="background-color:var(--bg-primary); border:1px solid var(--border-color); border-radius:12px; padding:1.5rem;">
+                            <h4 style="font-weight:700; font-size:1.1rem; color:var(--state-warning); margin-bottom:0.75rem; display:flex; align-items:center; gap:0.5rem;">
+                                <span style="font-size:1.3rem;">✨</span> First-Time Users / New Classroom
+                            </h4>
+                            <p style="font-size:0.95rem; color:var(--text-muted); margin-bottom:0.5rem;">If this is the initial launch on a newly registered device:</p>
+                            <ol style="padding-left:1.25rem; font-size:0.9rem; color:var(--text-muted); display:flex; flex-direction:column; gap:0.25rem;">
+                                <li>Log in using the assigned classroom <strong>Username</strong> and <strong>Password</strong>.</li>
+                                <li>Upon successful login, you will be prompted to <strong>Create a New PIN</strong>.</li>
+                                <li>Confirm and save the PIN. Use this <strong>PIN</strong> for all future quick logins.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 6: Success Checklist -->
+            <section class="section-card" id="success-checklist">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--state-success);"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        5. Installation Success Checklist
+                    </h3>
+                </div>
+
+                <div class="section-content">
+                    <!-- Success Indicator Widget -->
+                    <div class="success-checklist-box" id="successWidget" style="background-color: var(--state-success-bg); border-color: var(--state-success); opacity: 1;">
+                        <div class="success-checklist-icon" style="color: var(--state-success);">✅</div>
+                        <div class="success-checklist-text">
+                            <h4 style="color: var(--text-main); font-weight: 700;">System Ready for Classroom Use</h4>
+                            <p style="color: var(--text-muted); font-size: 0.95rem;">All configuration steps completed. Teachers may now sign in using the PIN.</p>
+                        </div>
+                    </div>
+
+                    <div class="success-checklist-items">
+                        <div class="checklist-item">
+                            <span class="checklist-bullet">✓</span> Device registered successfully.
+                        </div>
+                        <div class="checklist-item">
+                            <span class="checklist-bullet">✓</span> School Code validated.
+                        </div>
+                        <div class="checklist-item">
+                            <span class="checklist-bullet">✓</span> Classroom Name configured.
+                        </div>
+                        <div class="checklist-item">
+                            <span class="checklist-bullet">✓</span> PIN verified or created.
+                        </div>
+                        <div class="checklist-item">
+                            <span class="checklist-bullet">✓</span> Home screen/dashboard loaded successfully.
+                        </div>
+                        <div class="checklist-item">
+                            <span class="checklist-bullet">✓</span> Internet connectivity active.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 7: Troubleshooting -->
+            <section class="section-card" id="troubleshooting">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--state-error);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        6. Troubleshooting Common Installation Issues
+                    </h3>
+                </div>
+
+                <div class="section-content">
+                    <div class="comparison-container">
+                        <table class="ts-table">
+                            <thead>
+                                <tr>
+                                    <th>Common Issue</th>
+                                    <th>Action / Resolution</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="ts-issue-label">App not installed</td>
+                                    <td>Uninstall conflicting older versions of CePolite, clear download cache, and retry installer.</td>
+                                </tr>
+                                <tr>
+                                    <td class="ts-issue-label">Permission denied</td>
+                                    <td>Go to Android settings > Apps > CePolite > Permissions. Manually grant files/media storage permissions.</td>
+                                </tr>
+                                <tr>
+                                    <td class="ts-issue-label">Registration failed</td>
+                                    <td>Verify School Code has no typos. Check the device Wi-Fi connection is active.</td>
+                                </tr>
+                                <tr>
+                                    <td class="ts-issue-label">PIN not accepted</td>
+                                    <td>Contact your system administrator to verify details or request a classroom PIN reset.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Theme Toggle Logic
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeToggleIcon = document.getElementById('themeToggleIcon');
+        const themeToggleLabel = document.getElementById('themeToggleLabel');
+
+        // Check for saved theme preference
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeToggleIcon.textContent = '☀️';
+            themeToggleLabel.textContent = 'Light Mode';
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            themeToggleIcon.textContent = isDark ? '☀️' : '🌙';
+            themeToggleLabel.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+        });
+
+        // Mobile Menu Toggle
+        const menuToggleBtn = document.getElementById('menuToggleBtn');
+        const sidebarMenu = document.getElementById('sidebarMenu');
+
+        menuToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sidebarMenu.classList.toggle('open');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!sidebarMenu.contains(e.target) && e.target !== menuToggleBtn) {
+                sidebarMenu.classList.remove('open');
+            }
+        });
+
+        // Step Accordion Toggling
+        document.querySelectorAll('.step-row-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const row = header.closest('.step-row');
+                row.classList.toggle('expanded');
+            });
+        });
+
+        // Copy to Clipboard Utility
+        function copyContent(elementId, btn) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalSvg = btn.innerHTML;
+                btn.innerHTML = `<svg width="16" height="16" fill="none" stroke="var(--state-success)" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>`;
+                setTimeout(() => {
+                    btn.innerHTML = originalSvg;
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+
+        // Sidebar active scroll highlight
+        const sections = document.querySelectorAll('section');
+        const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - 120)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            sidebarLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').slice(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
