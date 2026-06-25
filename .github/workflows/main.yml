@@ -1,14 +1,14 @@
-name: Sync HTML to Firestore
+name: Sync to Firestore + Deploy to Firebase Hosting
 
 on:
   push:
     branches:
-      - main        # ✏️ Change to your branch (e.g. master)
+      - main        # ✏️ Change to your branch if needed
     paths:
-      - "**.html"   # Only triggers when an HTML file changes
+      - "**.html"   # Triggers when any HTML file changes
 
 jobs:
-  sync:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,13 +20,22 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install Firebase Admin SDK
-        run: npm install firebase-admin
+      - name: Install dependencies
+        run: npm install firebase-admin firebase-tools
 
-      - name: Run sync script
+      - name: Sync HTML to Firestore
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           HTML_FILE_PATH: "index.html"   # ✏️ Change to your HTML file path
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_ACTOR: ${{ github.actor }}
         run: node .github/scripts/sync-to-firestore.js
+
+      - name: Deploy to Firebase Hosting
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          npx firebase-tools deploy --only hosting \
+            --project ${{ secrets.FIREBASE_PROJECT_ID }} \
+            --token ${{ secrets.FIREBASE_TOKEN }} \
+            --non-interactive
